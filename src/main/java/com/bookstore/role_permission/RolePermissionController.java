@@ -1,6 +1,7 @@
 package com.bookstore.role_permission;
 
 import com.bookstore.common.Routes;
+import com.bookstore.common.SubmitResult;
 import com.bookstore.role.Role;
 import com.bookstore.role.RoleService;
 import lombok.AllArgsConstructor;
@@ -8,10 +9,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -23,44 +21,32 @@ public class RolePermissionController {
     private final RolePermissionService rpService;
 
     @GetMapping(Routes.ROLE_PERMISSION_ENTRY)
-    public String rolePermissionEntry(@RequestParam(required = false) Long roleId, Model model) {
+    public String rolePermissionEntry(@RequestParam(name="id", required = false) Long id,@RequestParam(name = "msg", required = false) String msg, Model model) {
         RolePermission rolePermission = new RolePermission();
-        List<Role> roles = roleService.findAll();
-//        Role selectedRole = null;
-//        List<RolePermission> selectedPermissions = List.of();
 
-//        if (roleId != null) {
-//            selectedRole = roleService.findById(roleId);
-//            selectedPermissions = rpService.getPermissions(selectedRole);
-//        }
+        if(id != null) {
+//            rolePermission = rpService.findById(id);
+            if (msg != null && msg.equals("create")) {
+                SubmitResult.success(model, "Role Permission created successfully!");
+            }
+            if (msg != null && msg.equals("update")) {
+                SubmitResult.success(model, "Role Permission updated successfully!");
+            }
+        }
+        List<Role> roles = roleService.findAll();
 
         model.addAttribute("roles", roles);
-//        model.addAttribute("selectedRole", selectedRole);
         model.addAttribute("modules", Modules.values());
         model.addAttribute("permissions", Permissions.values());
         model.addAttribute("rolePermission", rolePermission);
-//        model.addAttribute("selected", selectedPermissions);
         model.addAttribute("entryUrl", Routes.ROLE_PERMISSION_ENTRY);
-
         return "role-permission/role-permission-entry";
     }
 
     @PostMapping(Routes.ROLE_PERMISSION_ENTRY)
-    public String saveRolePermissions(@RequestParam Long roleId,
-                                      @RequestParam(name = "permissions", required = false) List<String> permissionStrings, RolePermission rolePermission) {
-
-        Role role = roleService.findById(roleId);
-
-        List<Permissions> permissions = List.of();
-        if (permissionStrings != null && !permissionStrings.isEmpty()) {
-            permissions = permissionStrings.stream()
-                    .map(Permissions::valueOf)
-                    .toList();
-        }
-
-        rpService.savePermissions(role, permissions);
-
-        return "redirect:" + Routes.ROLE_PERMISSION_ENTRY + "?roleId=" + roleId + "&msg=success";
+    public String saveRolePermissions(@ModelAttribute RolePermission rolePermission) {
+        rpService.save(rolePermission);
+        return "redirect:" + Routes.ROLE_PERMISSION_LIST;
     }
 
     @GetMapping(Routes.ROLE_PERMISSION_LIST)

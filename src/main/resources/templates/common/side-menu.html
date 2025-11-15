@@ -31,7 +31,7 @@
         isActivesupplier=${uri.startsWith(supplierEntry) || uri.startsWith(supplierList)},
         isActiveCustomer=${uri.startsWith(customerEntry) || uri.startsWith(customerList)},
         isActiveUser=${uri.startsWith(userEntry) || uri.startsWith(userList)},
-        isActiveRole=${uri.startsWith(roleEntry) || uri.startsWith(roleList)},
+        isActiveRole=${(uri.startsWith(roleEntry) || uri.startsWith(roleList)) && !uri.startsWith(rolePermissionEntry) && !uri.startsWith(rolePermissionList)},
         isActiveRolePermission=${uri.startsWith(rolePermissionEntry) || uri.startsWith(rolePermissionList)},
         isActiveReport=${uri.startsWith(report)}">
     <ul class="list-unstyled lh-lg">

@@ -8,56 +8,84 @@
 </head>
 
 <body>
-<h4 layout:fragment="title">Assign Permission to Role</h4>
+
+<h4 layout:fragment="title" class="pb-2 border-bottom">
+    <i class="bi bi-shield-lock"></i>
+    Assign Permission to Role
+</h4>
 
 <th:block layout:fragment="content">
-
-    <div class="container mt-3">
-
-        <!-- Role Selection -->
-        <form method="post" th:action="${entryUrl}">
-            <div class="mb-3">
-                <label for="roleSelect" class="form-label fw-bold">Select Role</label>
-                <select id="roleSelect" name="roleId" class="form-select">
-<!--                        onchange="this.form.submit()">-->
-                    <option value="">-- Select Role --</option>
-                    <option th:each="role : ${roles}"
-                            th:value="${role.id}"
-                            th:text="${role.roleName}">
-<!--                            th:selected="${selectedRole != null} ? ${role.id} == ${selectedRole.id} : false">-->
-                    </option>
-                </select>
+        <div class="card shadow-sm">
+            <div class="card-header bg-white fw-bold border-0 py-3">
+                <i class="bi bi-person-badge"></i> Role Information
             </div>
+            <div class="card-body">
+                <form method="post" th:action="${entryUrl}" th:object="${rolePermission}">
+                    <input type="hidden" th:field="*{id}">
+                    <div class="row g-3 mb-2">
+                        <div class="col-md-4">
+                            <label class="form-label fw-semibold">Select Role</label>
+                            <select class="form-select"
+                                    th:if="${rolePermission.id == null}"
+                                    th:field="*{role.id}">
+                                <option value="">-- Select Role --</option>
+                                <option th:each="role : ${roles}"
+                                        th:value="${role.id}"
+                                        th:text="${role.roleName}">
+                                </option>
+                            </select>
+                            <input th:if="${rolePermission.id != null}"
+                                   class="form-control"
+                                   th:field="*{role.id}" readonly>
+                        </div>
+                    </div>
+                    <div class="mt-4 mb-3">
+                        <h5 class="fw-bold text-secondary">
+                            <i class="bi bi-grid-3x3-gap-fill"></i>
+                            Module Permissions
+                        </h5>
+                        <hr>
+                    </div>
+                    <div class="row g-4">
+                        <div class="col-md-6" th:each="module : ${modules}">
+                            <div class="card shadow-sm h-100 border-0">
+                                <div class="card-header bg-primary text-white fw-semibold py-2">
+                                    <i class="bi bi-folder-check"></i>
+                                    <span th:text="${module.title}"></span>
+                                </div>
+                                <div class="card-body">
+                                    <div class="row gy-3">
+                                        <div class="col-md-6"
+                                             th:each="perm : ${permissions}"
+                                             th:if="${perm.name().startsWith(module.name())}">
 
-            <!-- Modules -->
-            <div th:each="module : ${modules}" class="card mb-3 shadow-sm">
-                <div class="card-header fw-bold" th:text="${module.title}"></div>
+                                            <div class="form-check py-2 px-3 border rounded">
+                                                <input class="form-check-input"
+                                                       type="checkbox"
+                                                       th:value="${perm.name()}"
+                                                       th:field="*{permission}">
+                                                <label class="form-check-label fw-medium"
+                                                       th:text="${perm.title}">
+                                                </label>
+                                            </div>
 
-                <div class="card-body">
-                    <div class="row">
+                                        </div>
+                                    </div>
 
-                        <!-- Permissions belonging to this module -->
-                        <div class="col-md-4 mb-2"
-                             th:each="perm : ${permissions}"
-                             th:if="${perm.name().startsWith(module.name())}">
-                            <div class="form-check">
-                                <input class="form-check-input"
-                                       type="checkbox"
-                                       name="permissions"
-                                       th:value="${perm.name()}">
-<!--                                       th:checked="${selected[permission.name() == perm.name()] != null}">-->
-                                <label class="form-check-label" th:text="${perm.title}"></label>
+                                </div>
                             </div>
                         </div>
-
                     </div>
-                </div>
+                    <div class="text-end mt-4">
+                        <button class="btn btn-primary px-4 py-2 fw-semibold shadow-sm">
+                            <i class="bi bi-floppy"></i> Save Permissions
+                        </button>
+                    </div>
+
+                </form>
+
             </div>
-
-            <button class="btn btn-primary mt-3 px-4">Save Permissions</button>
-        </form>
-
-    </div>
+        </div>
 
 </th:block>
 

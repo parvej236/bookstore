@@ -24,7 +24,7 @@ public class RolePermissionController {
 
     @GetMapping(Routes.ROLE_PERMISSION_ENTRY)
     public String rolePermissionEntry(@RequestParam(required = false) Long roleId, Model model) {
-
+        RolePermission rolePermission = new RolePermission();
         List<Role> roles = roleService.findAll();
 //        Role selectedRole = null;
 //        List<RolePermission> selectedPermissions = List.of();
@@ -38,6 +38,7 @@ public class RolePermissionController {
 //        model.addAttribute("selectedRole", selectedRole);
         model.addAttribute("modules", Modules.values());
         model.addAttribute("permissions", Permissions.values());
+        model.addAttribute("rolePermission", rolePermission);
 //        model.addAttribute("selected", selectedPermissions);
         model.addAttribute("entryUrl", Routes.ROLE_PERMISSION_ENTRY);
 
@@ -46,7 +47,7 @@ public class RolePermissionController {
 
     @PostMapping(Routes.ROLE_PERMISSION_ENTRY)
     public String saveRolePermissions(@RequestParam Long roleId,
-                                      @RequestParam(name = "permissions", required = false) List<String> permissionStrings) {
+                                      @RequestParam(name = "permissions", required = false) List<String> permissionStrings, RolePermission rolePermission) {
 
         Role role = roleService.findById(roleId);
 

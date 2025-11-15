@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{common/layout}">
+<head>
+    <meta charset="UTF-8">
+    <title>Book Store</title>
+</head>
+<body>
+<h4 layout:fragment="title">Customer List</h4>
+<th:block layout:fragment="content">
+    <table class="table table-bordered table-striped " id="table">
+        <thead class="table-secondary">
+        <tr>
+            <th>Name</th>
+            <th>Phone</th>
+            <th>E-mail</th>
+            <th>Address</th>
+            <th>Action</th>
+        </tr>
+        </thead>
+    </table>
+</th:block>
+<th:block layout:fragment="script">
+    <script th:inline="javascript">
+        window.addEventListener('DOMContentLoaded', () => {
+            const openUrl = /*[[${openUrl}]]*/'';
+            const isAdmin = /*[[${loggedUser.isAdmin}]]*/'';
+
+            new DataTable('#table', {
+                ajax: {
+                    url: /*[[${dataUrl}]]*/'',
+                    dataSrc: ''
+                },
+                columns: [
+                    {data: 'name'},
+                    {
+                        data: 'phone',
+                        type: 'text'
+                    },
+                    {
+                        data: null,
+                        render: (customer) => `${customer.email}<a class="ms-2" href="mailto:${customer.email}" target="_blank"><i class="bi bi-envelope-open text-primary"></i></a>`
+                    },
+                    {data: 'address'},
+                    {
+                        data: null,
+                        orderable: false,
+                        className: 'dt-center',
+                        render: (customer) => `<a href="${openUrl}?id=${customer.id}" class="bi bi-box-arrow-up-right text-primary"></a>`
+                    }
+                ],
+                layout: {
+                    topStart: {
+                        buttons: isAdmin ? [
+                            {
+                                text: '<span class="text-white">Add Customer</span>',
+                                className: 'btn btn-primary',
+                                action: () => window.location.href = openUrl
+                            }
+                        ] : []
+                    },
+                    topEnd: 'search',
+                    bottomStart: 'info',
+                    bottomEnd: ['pageLength', 'paging'],
+                },
+                language: {
+                    lengthMenu: "_MENU_",
+                    search: "Search: ",
+                    searchPlaceholder: "Type to search...",
+                }
+            });
+        });
+    </script>
+</th:block>
+</body>
+</html>

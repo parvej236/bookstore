@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<body>
+<div th:fragment="side-menu" th:with="
+        home=${T(com.bookstore.common.Routes).HOME},
+        dashboard=${T(com.bookstore.common.Routes).DASHBOARD},
+        saleEntry=${T(com.bookstore.common.Routes).SALE_ENTRY},
+        saleList=${T(com.bookstore.common.Routes).SALE_LIST},
+        currentStock=${T(com.bookstore.common.Routes).CURRENT_STOCK},
+        stockInEntry=${T(com.bookstore.common.Routes).STOCK_IN},
+        stockInList=${T(com.bookstore.common.Routes).STOCK_IN_LIST},
+        bookEntry=${T(com.bookstore.common.Routes).BOOK_ENTRY},
+        bookList=${T(com.bookstore.common.Routes).BOOK_LIST},
+        supplierEntry=${T(com.bookstore.common.Routes).SUPPLIER_ENTRY},
+        supplierList=${T(com.bookstore.common.Routes).SUPPLIER_LIST},
+        customerEntry=${T(com.bookstore.common.Routes).CUSTOMER_ENTRY},
+        customerList=${T(com.bookstore.common.Routes).CUSTOMER_LIST},
+        userEntry=${T(com.bookstore.common.Routes).USER_ENTRY},
+        userList=${T(com.bookstore.common.Routes).USER_LIST},
+        roleEntry=${T(com.bookstore.common.Routes).ROLE_ENTRY},
+        roleList=${T(com.bookstore.common.Routes).ROLE_LIST},
+        rolePermissionEntry=${T(com.bookstore.common.Routes).ROLE_PERMISSION_ENTRY},
+        rolePermissionList=${T(com.bookstore.common.Routes).ROLE_PERMISSION_LIST},
+        report=${T(com.bookstore.common.Routes).REPORT},
+
+        isActiveDashboard=${uri.startsWith(home) || uri.startsWith(dashboard)},
+        isActiveSales=${uri.startsWith(saleEntry) || uri.startsWith(saleList)},
+        isActiveCurrentStock=${uri.startsWith(currentStock)},
+        isActiveStockIn=${uri.startsWith(stockInEntry) || uri.startsWith(stockInList)},
+        isActiveBook=${uri.startsWith(bookEntry) || uri.startsWith(bookList)},
+        isActivesupplier=${uri.startsWith(supplierEntry) || uri.startsWith(supplierList)},
+        isActiveCustomer=${uri.startsWith(customerEntry) || uri.startsWith(customerList)},
+        isActiveUser=${uri.startsWith(userEntry) || uri.startsWith(userList)},
+        isActiveRole=${uri.startsWith(roleEntry) || uri.startsWith(roleList)},
+        isActiveRolePermission=${uri.startsWith(rolePermissionEntry) || uri.startsWith(rolePermissionList)},
+        isActiveReport=${uri.startsWith(report)}">
+    <ul class="list-unstyled lh-lg">
+        <li><a class="nav-link" th:classappend="${isActiveDashboard ? 'active-menu' : ''}" th:href="@{${dashboard}}"><i class="bi bi-grid-1x2-fill me-3"></i>Dashboard</a></li>
+        <li><a class="nav-link" th:classappend="${isActiveSales ? 'active-menu' : ''}" th:href="@{${saleList}}"><i class="bi bi-upc-scan me-3"></i>Sales</a></li>
+        <li><a class="nav-link" th:classappend="${isActiveCurrentStock ? 'active-menu' : ''}" th:href="@{${currentStock}}"><i class="bi bi-stack me-3"></i>Stock</a></li>
+        <li><a class="nav-link" th:classappend="${isActiveStockIn ? 'active-menu' : ''}" th:href="@{${stockInList}}"><i class="bi bi-arrow-up-square-fill me-3"></i>Stock In</a></li>
+        <li><a class="nav-link" th:classappend="${isActiveBook ? 'active-menu' : ''}" th:href="@{${bookList}}"><i class="bi bi-book-half me-3"></i>Book</a></li>
+        <li><a class="nav-link" th:classappend="${isActivesupplier ? 'active-menu' : ''}" th:href="@{${supplierList}}"><i class="bi bi-pencil-square me-3"></i>Supplier</a></li>
+        <li><a class="nav-link" th:classappend="${isActiveCustomer ? 'active-menu' : ''}" th:href="@{${customerList}}"><i class="bi bi-people-fill me-3"></i>Customer</a></li>
+        <li><a class="nav-link" th:classappend="${isActiveUser ? 'active-menu' : ''}" th:if="${loggedUser.isAdmin}" th:href="@{${userList}}"><i class="bi bi-person-circle me-3"></i>User</a></li>
+        <li><a class="nav-link" th:classappend="${isActiveRole ? 'active-menu' : ''}" th:if="${loggedUser.isAdmin}" th:href="@{${roleList}}"><i class="bi bi-person-fill-gear me-3"></i>Role</a></li>
+        <li><a class="nav-link" th:classappend="${isActiveRolePermission ? 'active-menu' : ''}" th:if="${loggedUser.isAdmin}" th:href="@{${rolePermissionList}}"><i class="bi bi-clipboard-check me-3"></i>Role Permission</a></li>
+        <li><a class="nav-link" th:classappend="${isActiveReport ? 'active-menu' : ''}" th:href="@{${report}}"><i class="bi bi-file-earmark-bar-graph-fill me-3"></i>Report</a></li>
+    </ul>
+</div>
+</body>
+</html>

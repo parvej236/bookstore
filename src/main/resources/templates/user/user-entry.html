@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{common/layout}">
+<head>
+    <meta charset="UTF-8">
+    <title>Book Store</title>
+</head>
+<body>
+<h4 layout:fragment="title" th:text="${user.id == null ? 'Create User' : 'Update User'}"></h4>
+<th:block layout:fragment="content">
+    <form th:action="${entryUrl}" th:object="${user}" method="post">
+        <input type="hidden" th:field="*{id}">
+        <div class="card">
+            <h5 class="card-header text-primary">User Information</h5>
+            <div class="card-body">
+
+                <div class="row">
+                    <div class="col-6">
+                        <label class="form-label" for="name">Name<span class="text-danger">*</span></label>
+                        <input type="text" class="form-control" id="name" placeholder="Name" th:field="*{name}" required>
+                    </div>
+                    <div class="col-6">
+                        <label class="form-label" for="username">Username<span class="text-danger">*</span></label>
+                        <input type="text" class="form-control" id="username" placeholder="Username" th:field="*{username}" required>
+                        <span class="text-danger" th:if="${#fields.hasErrors('username')}" th:errors="*{username}"></span>
+                    </div>
+                </div>
+
+                <div class="row mt-3">
+                    <div class="col-6">
+                        <label class="form-label" for="email">E-mail<span class="text-danger">*</span></label>
+                        <input type="text" class="form-control" id="email" placeholder="xxxxxx@gmail.com" th:field="*{email}" required>
+                        <span class="text-danger" th:if="${#fields.hasErrors('email')}" th:errors="*{email}"></span>
+                    </div>
+                    <div class="col-6">
+                        <label class="form-label" for="phone">Phone<span class="text-danger">*</span></label>
+                        <input type="text" class="form-control" id="phone" placeholder="0123xxxx789" th:field="*{phone}" required>
+                    </div>
+                </div>
+
+                <div class="row mt-3">
+                    <div class="col-6">
+                        <label class="form-label" for="role">Role<span class="text-danger">*</span></label>
+                        <select class="form-select" id="role" th:field="*{role}" required>
+                            <option value="" selected>Choose...</option>
+                            <option th:each="role : ${roles}" th:text="${role.roleName}" th:value="${role.roleName}"></option>
+<!--                            <option value="Admin">Admin</option>-->
+<!--                            <option value="User">User</option>-->
+                        </select>
+
+<!--                        <label class="form-label red-star" for="institution">Institution:<span class="text-danger">*</span></label>-->
+<!--                        <select id="institution" class="form-select" th:if="${academicClass.id == null}"-->
+<!--                                th:field="*{institution.id}" onchange="loadClassList(this.value)">-->
+<!--                            <option value="0">-Please Select-</option>-->
+<!--                            <option th:each="institution : ${institutionList}" th:text="${institution.name}"-->
+<!--                                    th:value="${institution.id}"></option>-->
+<!--                        </select>-->
+                    </div>
+                    <div class="col-6">
+                        <label class="form-label">Status<span class="text-danger">*</span></label>
+                        <div>
+                            <input name="status" id="active" type="radio" th:field="*{active}" value="true" th:disabled="${user.id == null}">
+                            <label class="form-label me-3" for="active">Active</label>
+                            <input name="status" id="inactive" type="radio" th:field="*{active}" value="false" checked>
+                            <label class="form-label" for="inactive">Inactive</label>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+        <button class="btn btn-primary mt-2" type="submit" th:text="${user.id == null ? 'Save' : 'Update'}"></button>
+    </form>
+    <th:block th:replace="~{common/toast.html :: toast}"></th:block>
+</th:block>
+</body>
+</html>

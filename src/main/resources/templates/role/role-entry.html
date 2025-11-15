@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{common/layout}">
+<head>
+    <meta charset="UTF-8">
+    <title>Book Store</title>
+</head>
+<body>
+<h4 layout:fragment="title" th:text="${role.id == null ? 'Create Role' : 'Update Role'}"></h4>
+<th:block layout:fragment="content">
+    <form th:action="${entryUrl}" th:object="${role}" method="post">
+        <input type="hidden" th:field="*{id}">
+        <div class="card">
+            <h5 class="card-header text-primary">Role Information</h5>
+            <div class="card-body">
+
+                <div class="row">
+                    <div class="col-6">
+                        <label class="form-label" for="name">Name<span class="text-danger">*</span></label>
+                        <input type="text" class="form-control" id="name" placeholder="Name" th:field="*{roleName}">
+                    </div>
+
+                    <div class="col-6">
+                        <label class="form-label">Status<span class="text-danger">*</span></label>
+                        <div>
+                            <input name="status" id="active" type="radio" th:field="*{active}" value="true">
+                            <label class="form-label me-3" for="active">Active</label>
+                            <input name="status" id="inactive" type="radio" th:field="*{active}" value="false">
+                            <label class="form-label" for="inactive">Inactive</label>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+        <button class="btn btn-primary mt-2" type="submit" th:if="${loggedUser.isAdmin}" th:text="${role.id == null ? 'Save' : 'Update'}"></button>
+    </form>
+    <th:block th:replace="~{common/toast.html :: toast}"></th:block>
+</th:block>
+<th:block layout:fragment="script">
+    <script th:inline="javascript">
+    </script>
+</th:block>
+</body>
+</html>

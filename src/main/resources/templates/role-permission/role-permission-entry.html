@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{common/layout}">
+
+<head>
+    <title>Role Permission</title>
+</head>
+
+<body>
+<h4 layout:fragment="title">Assign Permission to Role</h4>
+
+<th:block layout:fragment="content">
+
+    <div class="container mt-3">
+
+        <!-- Role Selection -->
+        <form method="post" th:action="${entryUrl}">
+            <div class="mb-3">
+                <label for="roleSelect" class="form-label fw-bold">Select Role</label>
+                <select id="roleSelect" name="roleId" class="form-select">
+<!--                        onchange="this.form.submit()">-->
+                    <option value="">-- Select Role --</option>
+                    <option th:each="role : ${roles}"
+                            th:value="${role.id}"
+                            th:text="${role.roleName}">
+<!--                            th:selected="${selectedRole != null} ? ${role.id} == ${selectedRole.id} : false">-->
+                    </option>
+                </select>
+            </div>
+
+            <!-- Modules -->
+            <div th:each="module : ${modules}" class="card mb-3 shadow-sm">
+                <div class="card-header fw-bold" th:text="${module.title}"></div>
+
+                <div class="card-body">
+                    <div class="row">
+
+                        <!-- Permissions belonging to this module -->
+                        <div class="col-md-4 mb-2"
+                             th:each="perm : ${permissions}"
+                             th:if="${perm.name().startsWith(module.name())}">
+                            <div class="form-check">
+                                <input class="form-check-input"
+                                       type="checkbox"
+                                       name="permissions"
+                                       th:value="${perm.name()}">
+<!--                                       th:checked="${selected[permission.name() == perm.name()] != null}">-->
+                                <label class="form-check-label" th:text="${perm.title}"></label>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+
+            <button class="btn btn-primary mt-3 px-4">Save Permissions</button>
+        </form>
+
+    </div>
+
+</th:block>
+
+</body>
+</html>

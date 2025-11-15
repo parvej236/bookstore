@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{common/layout}">
+<head>
+    <meta charset="UTF-8">
+    <title>Book Store</title>
+</head>
+<body>
+<h4 layout:fragment="title">Role List</h4>
+<th:block layout:fragment="content">
+    <table class="table table-bordered table-striped" id="table">
+        <thead class="table-secondary">
+        <tr>
+            <th>Name</th>
+            <th>Action</th>
+        </tr>
+        </thead>
+    </table>
+</th:block>
+<th:block layout:fragment="script">
+    <script th:inline="javascript">
+        window.addEventListener('DOMContentLoaded', () => {
+            const openUrl = /*[[${openUrl}]]*/'';
+            const isAdmin = /*[[${loggedUser.isAdmin}]]*/'';
+
+            new DataTable('#table', {
+                ajax: {
+                    url: /*[[${dataUrl}]]*/'',
+                    dataSrc: ''
+                },
+                columns: [
+                    {data: 'role.roleName'},
+                    {
+                        data: null,
+                        orderable: false,
+                        className: 'dt-center',
+                        render: (book) => `<a href="${openUrl}?id=${book.id}" class="bi bi-box-arrow-up-right text-primary"></a>`
+                    }
+                ],
+                layout: {
+                    topStart: {
+                        buttons: isAdmin ? [
+                            {
+                                text: '<span class="text-white">Add Role Permission</span>',
+                                className: 'btn btn-primary',
+                                action: () => window.location.href = openUrl
+                            }
+                        ] : []
+                    },
+                    topEnd: 'search',
+                    bottomStart: 'info',
+                    bottomEnd: ['pageLength', 'paging'],
+                },
+                language: {
+                    lengthMenu: "_MENU_",
+                    search: "Search: ",
+                    searchPlaceholder: "Type to search...",
+                }
+            });
+        });
+    </script>
+</th:block>
+</body>
+</html>

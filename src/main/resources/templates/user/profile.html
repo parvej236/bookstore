@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{common/layout}">
+<head>
+    <meta charset="UTF-8">
+    <title>Book Store</title>
+</head>
+<body>
+<h4 layout:fragment="title">Profile</h4>
+<th:block layout:fragment="content">
+ <div class="card border-0 rounded-4">
+     <div class="card-body">
+         <div class="row">
+             <div class="col-md-3 d-flex justify-content-center align-items-center">
+                 <img th:src="@{/images/dummy_male.jpg}"
+                      alt="User Image"
+                      class="mb-3 border-opacity-10 border-dark"
+                      style="width: 200px; height: 250px; object-fit: cover; border: 4px solid #f0f0f0;">
+             </div>
+             <div class="col-md-9">
+                 <h3 class="fw-bold mb-1" th:text="${user.name}">User Name</h3>
+                 <p class="text-muted" th:text="'@' + ${user.username}">@username</p>
+                 <h5 class="fw-bold mb-3">Profile Details</h5>
+                 <div th:text="${user.email}" class="mb-2">example@mail.com</div>
+                 <div th:text="${user.phone}" class="mb-2">0123456789</div>
+                 <div class="mb-2">
+                     <span class="fw-bold" th:text="${user.role}">ADMIN</span>&nbsp;
+                     <span class="badge"
+                           th:text="${user.active ? 'Active' : 'Inactive'}"
+                           th:classappend="${user.active} ? 'bg-success' : 'bg-danger'"></span>
+                 </div>
+             </div>
+         </div>
+     </div>
+ </div>
+
+</th:block>
+<th:block layout:fragment="script">
+    <script th:inline="javascript">
+
+    </script>
+</th:block>
+</body>
+</html>

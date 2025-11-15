@@ -1,0 +1,234 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{common/layout}">
+<head>
+    <meta charset="UTF-8">
+    <title>Book Store</title>
+</head>
+<body>
+<h4 layout:fragment="title" th:text="${stockIn.id == null ? 'StockIn Entry' : 'Update StockIn'}"></h4>
+<th:block layout:fragment="content">
+    <div class="row" th:if="${stockIn.id != null}">
+        <div class="col-8">
+            <div class="card h-100">
+                <h5 class="card-header text-primary">Action & Time</h5>
+                <div class="card-body">
+                    <p class="card-text">
+                        <span class="d-block">Created by <b th:text="${stockIn.createdBy}"></b> on <b th:text="${stockIn.createdAt}"></b></span>
+                        <span class="d-block" th:if="${stockIn.stage == T(com.bookstore.common.Stage).SUBMIT || stockIn.stage == T(com.bookstore.common.Stage).APPROVE}">Submitted by <b th:text="${stockIn.submittedBy}"></b> on <b th:text="${stockIn.submittedAt}"></b></span>
+                        <span class="d-block" th:if="${stockIn.stage == T(com.bookstore.common.Stage).APPROVE}">Approved by <b th:text="${stockIn.approvedBy}"></b> on <b th:text="${stockIn.approvedAt}"></b></span>
+                    </p>
+                </div>
+            </div>
+        </div>
+        <div class="col-4">
+            <div class="card h-100">
+                <h5 class="card-header text-primary">Status</h5>
+                <div class="card-body">
+                    <h4 class="fw-bold" th:text="${stockIn.stage}"></h4>
+                </div>
+            </div>
+        </div>
+    </div>
+    <form th:action="${entryUrl}" th:object="${stockIn}" method="post">
+        <input type="hidden" th:field="*{id}">
+        <input type="hidden" th:field="*{stage}">
+        <div class="card mt-3">
+            <h5 class="card-header text-primary">StockIn Information</h5>
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-4">
+                        <label class="form-label" for="invoice">Invoice<span class="text-danger">*</span></label>
+                        <input class="form-control" type="text" id="invoice" th:classappend="${#fields.hasErrors('invoice') ? 'is-invalid' : ''}" th:field="*{invoice}" readonly>
+                        <span class="text-danger" th:if="${#fields.hasErrors('invoice')}" th:errors="*{invoice}"></span>
+                    </div>
+                    <div class="col-4">
+                        <label class="form-label" for="date">Date<span class="text-danger">*</span></label>
+                        <input class="form-control" type="text" id="date" th:classappend="${#fields.hasErrors('date') ? 'is-invalid' : ''}" th:field="*{date}" placeholder="Date">
+                        <span class="text-danger" th:if="${#fields.hasErrors('date')}" th:errors="*{date}"></span>
+                    </div>
+                    <div class="col-4">
+                        <label class="form-label" for="type">Type<span class="text-danger">*</span></label>
+                        <select id="type" th:field="*{type}">
+                            <option value="" selected>Choose...</option>
+                            <option value="Purchase">Purchase</option>
+                            <option value="Transfer">Transfer</option>
+                            <option value="Return">Return</option>
+                        </select>
+                        <span class="text-danger" th:if="${#fields.hasErrors('type')}" th:errors="*{type}"></span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="card mt-3">
+            <h5 class="card-header text-primary">StockIn Details<span class="text-danger ms-2 fs-6" th:if="${#fields.hasErrors('details')}">(Details list should not be empty!)</span></h5>
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-4">
+                        <div class="input-group">
+                            <span class="input-group-text bi bi-upc-scan"></span>
+                            <input class="form-control" type="text" id="isbn-search" placeholder="Scan Barcode" onkeydown="searchByBarcode(event)">
+                        </div>
+                    </div>
+                    <div class="col-8">
+                        <div class="input-group">
+                            <span class="input-group-text">Search Book</span>
+                            <div class="autocomplete flex-grow-1">
+                                <input class="form-control rounded-0 rounded-end book-search" type="text" th:data-search-url="${nameOrIsbnSearchUrl} + '?nameOrIsbn='" placeholder="Search by name or isbn">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="row mt-2">
+                    <div class="col-12">
+                        <table class="table table-bordered mb-0">
+                            <thead>
+                            <tr class="table-secondary text-center">
+                                <th class="col-3">Book</th>
+                                <th class="col-2">ISBN</th>
+                                <th class="col-3">Supplier</th>
+                                <th class="col-1">Pre Stock</th>
+                                <th class="col-2">Quantity</th>
+                                <th class="col-1">Action</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            <tr th:each="detail : ${stockIn.details}">
+                                <td>
+                                    <input class="form-control" type="text" th:value="${detail.book.name}" disabled>
+                                    <input type="hidden" th:value="${detail.book.id}">
+                                </td>
+                                <td>
+                                    <input class="form-control" type="text" th:value="${detail.book.isbn}" disabled>
+                                </td>
+                                <td>
+                                    <input class="form-control" type="text" th:value="${detail.book.supplier.name}" disabled>
+                                </td>
+                                <td>
+                                    <input class="form-control" type="text" th:value="${stockIn.stage == T(com.bookstore.common.Stage).APPROVE ? detail.preStock : detail.book.stock}" disabled>
+                                    <input type="hidden" th:value="${detail.book.stock}">
+                                </td>
+                                <td>
+                                    <input class="form-control" type="number" th:value="${detail.quantity}">
+                                </td>
+                                <td class="text-center">
+                                    <span class="btn btn-danger" onclick="removeRow(this)"><i class="bi bi-trash"></i></span>
+                                </td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <button class="btn btn-primary mt-3" name="stg" th:if="${stockIn.stage == null}" th:value="${T(com.bookstore.common.Stage).SAVE}">Save</button>
+        <button class="btn btn-primary mt-3" name="stg" th:if="${stockIn.stage == T(com.bookstore.common.Stage).SAVE && stockIn.id != null}" th:value="${T(com.bookstore.common.Stage).UPDATE}">Update</button>
+        <button class="btn btn-success mt-3" name="stg" th:if="${stockIn.stage == T(com.bookstore.common.Stage).SAVE && stockIn.id != null}" th:value="${T(com.bookstore.common.Stage).SUBMIT}">Submit</button>
+        <button class="btn btn-success mt-3" name="stg" th:if="${stockIn.stage == T(com.bookstore.common.Stage).SUBMIT}" th:value="${T(com.bookstore.common.Stage).APPROVE}">Approve</button>
+    </form>
+    <th:block th:replace="~{common/toast.html :: toast}"></th:block>
+</th:block>
+<th:block layout:fragment="script">
+    <script th:inline="javascript">
+        async function searchByBarcode(event) {
+            if (event.key === 'Enter' && event.target.value.trim() !== '') {
+                event.preventDefault();
+                const isbnSearchUrl = /*[[${isbnSearchUrl}]]*/'';
+                const url = isbnSearchUrl + "?isbn=" + event.target.value.trim();
+                const res = await fetch(url);
+                const book = await res.json();
+                if (book) {
+                    addRow(book);
+                }
+                event.target.value = '';
+                event.target.focus();
+            }
+        }
+
+        function alreadyInList(book) {
+            const rows = document.querySelectorAll('tbody tr');
+            for (const row of rows) {
+                const inputs = row.querySelectorAll('input');
+                if (Number(inputs[1].value) === book.id) {
+                    inputs[6].value = String(Number(inputs[6].value) + 1);
+                    return true;
+                }
+            }
+            return false;
+        }
+
+        function addRow(book) {
+            if (alreadyInList(book)) {
+                return;
+            }
+            const tr = document.createElement('tr');
+            tr.innerHTML = `
+                <td>
+                    <input class="form-control" type="text" value="${book.name}" disabled>
+                    <input type="hidden" value="${book.id}">
+                </td>
+                <td>
+                    <input class="form-control" type="text" value="${book.isbn}" disabled>
+                </td>
+                <td>
+                    <input class="form-control" type="text" value="${book.supplier.name}" disabled>
+                </td>
+                <td>
+                    <input class="form-control" type="text" value="${book.stock}" disabled>
+                    <input type="hidden" value="${book.stock}">
+                </td>
+                <td>
+                    <input class="form-control" type="number" value="1">
+                </td>
+                <td class="text-center">
+                    <span class="btn btn-danger" onclick="removeRow(this)"><i class="bi bi-trash"></i></span>
+                </td>
+            `;
+            document.querySelector('tbody').appendChild(tr);
+            reindex();
+        }
+
+        function reindex() {
+            const rows = document.querySelectorAll('tbody tr');
+            rows.forEach((row, index) => {
+                const inputs = row.querySelectorAll('input');
+                inputs[1].name = `details[${index}].book.id`;
+                inputs[5].name = `details[${index}].preStock`;
+                inputs[6].name = `details[${index}].quantity`;
+            })
+        }
+
+        function removeRow(el) {
+            el.closest('tr').remove();
+            reindex();
+        }
+
+        function renderBook(el, book) {
+            return `
+                <div>
+                    <div><span class="fw-bold">Book Info: </span>${book.name}(${book.isbn})</div>
+                    <div><span class="fw-bold">Supplier: </span>${book.supplier.name}</div>
+                    <div><span class="fw-bold">Current Stock: </span>${book.stock}</div>
+                </div>
+            `;
+        }
+
+        function selectBook(el, book) {
+            addRow(book);
+            el.value = '';
+            el.focus();
+        }
+
+        window.addEventListener('DOMContentLoaded', () => {
+            reindex();
+            const dateEl = document.getElementById('date');
+            applyDatepicker(dateEl, dateEl.value || new Date());
+            new AutoComplete(document.querySelector('.book-search'), renderBook, selectBook);
+            new NiceSelect.bind(document.querySelector('#type'), {searchable: true, placeholder: 'Choose...', searchtext: 'Type to search', selectedtext: 'Choose...'});
+        });
+    </script>
+</th:block>
+</body>
+</html>

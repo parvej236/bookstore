@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{common/layout}">
+<head>
+    <meta charset="UTF-8">
+    <title>Book Store</title>
+</head>
+<body>
+<h4 layout:fragment="title">Current Stock</h4>
+<th:block layout:fragment="content">
+
+    <div class="row">
+        <div class="col-4">
+            <div class="input-group">
+                <span class="input-group-text bi bi-upc-scan"></span>
+                <input class="form-control" type="text" id="isbn-search" placeholder="Scan Barcode" onkeydown="searchByBarcode(event)">
+            </div>
+        </div>
+        <div class="col-8">
+            <div class="input-group">
+                <span class="input-group-text">Search Book</span>
+                <div class="autocomplete flex-grow-1">
+                    <input class="form-control rounded-0 rounded-end book-search" type="text" th:data-search-url="${nameOrIsbnSearchUrl} + '?nameOrIsbn='" placeholder="Search by name or isbn">
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row mt-3">
+        <div class="col-4">
+            <div class="card h-100">
+                <h5 class="card-header text-primary">Stock Info</h5>
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-12">
+                            <div class="input-group">
+                                <span class="input-group-text col-6">Current Stock</span>
+                                <input class="form-control" type="text" id="current-stock" readonly>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row mt-2">
+                        <div class="col-12">
+                            <div class="input-group">
+                                <span class="input-group-text col-6">Pending Stock</span>
+                                <input class="form-control" type="text" id="pending-stock" readonly>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-8">
+            <div class="card h-100">
+                <h5 class="card-header text-primary">Book Info</h5>
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-6">
+                            <label for="name">Name</label>
+                            <input class="form-control" id="name" type="text" readonly>
+                        </div>
+                        <div class="col-6">
+                            <label for="name">ISBN</label>
+                            <input class="form-control" id="isbn" type="text" readonly>
+                        </div>
+                    </div>
+                    <div class="row mt-2">
+                        <div class="col-6">
+                            <label for="name">Genre</label>
+                            <input class="form-control" id="genre" type="text" readonly>
+                        </div>
+                        <div class="col-6">
+                            <label for="name">Supplier</label>
+                            <input class="form-control" id="supplier" type="text" readonly>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row mt-3">
+        <div class="col-12">
+            <div class="card">
+                <h5 class="card-header text-primary">Recent Transactions</h5>
+                <div class="card-body">
+                    <table class="table table-bordered mb-0">
+                        <thead>
+                        <tr class="table-secondary">
+                            <th>Date</th>
+                            <th>Invoice</th>
+                            <th>Type</th>
+                            <th>Purpose</th>
+                            <th>Pre Stock</th>
+                            <th>Quantity</th>
+                        </tr>
+                        </thead>
+                        <tbody></tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</th:block>
+<th:block layout:fragment="script">
+    <script th:inline="javascript">
+        async function searchByBarcode(event) {
+            if (event.key === 'Enter' && event.target.value.trim() !== '') {
+                event.preventDefault();
+                const isbnSearchUrl = /*[[${isbnSearchUrl}]]*/'';
+                const url = isbnSearchUrl + "?isbn=" + event.target.value.trim();
+                const res = await fetch(url);
+                const book = await res.json();
+                if (book) {
+                    await showDetails(book);
+                }
+                event.target.value = '';
+                event.target.focus();
+            }
+        }
+
+        async function showDetails(book) {
+            const dataUrl = /*[[${dataUrl}]]*/'';
+            const res = await fetch(dataUrl + '?id=' + book.id);
+            const stock = await res.json();
+            document.getElementById('current-stock').value = stock.currentStock + ' Pcs';
+            document.getElementById('pending-stock').value = stock.pendingStock + ' Pcs';
+            document.getElementById('name').value = stock.book.name;
+            document.getElementById('isbn').value = stock.book.isbn;
+            document.getElementById('genre').value = stock.book.genre;
+            document.getElementById('supplier').value = stock.book.supplier.name;
+            const tbody = document.querySelector('tbody');
+            if (stock.details) {
+                tbody.innerHTML = '';
+                stock.details.forEach(detail => {
+                    const row = tbody.insertRow();
+                    row.insertCell(0).textContent = detail.date;
+                    row.insertCell(1).textContent = detail.invoice;
+                    row.insertCell(2).textContent = detail.type;
+                    row.insertCell(3).textContent = detail.purpose;
+                    row.insertCell(4).textContent = detail.preStock;
+                    row.insertCell(5).textContent = detail.quantity;
+                });
+            } else {
+                tbody.innerHTML = '';
+            }
+        }
+
+        function renderBook(el, book) {
+            return `
+                <div>
+                    <div><span class="fw-bold">Book Info: </span>${book.name}(${book.isbn})</div>
+                    <div><span class="fw-bold">Supplier: </span>${book.supplier.name}</div>
+                </div>
+            `;
+        }
+
+        function selectBook(el, book) {
+            showDetails(book);
+            el.value = '';
+            el.focus();
+        }
+
+        window.addEventListener('DOMContentLoaded', () => {
+            new AutoComplete(document.querySelector('.book-search'), renderBook, selectBook);
+        });
+    </script>
+</th:block>
+</body>
+</html>

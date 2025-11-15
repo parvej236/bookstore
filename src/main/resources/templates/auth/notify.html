@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Back to Sing in</title>
+    <link rel="icon" th:href="@{images/icon.png}">
+    <link rel="stylesheet" th:href="@{/css/bootstrap.min.css}">
+    <style>
+        @font-face {
+            font-family: 'Roboto';
+            src: url('/fonts/roboto-regular.woff') format('woff');
+            font-weight: 400;
+            font-style: normal;
+        }
+
+        body {
+            font-family: 'Roboto', sans-serif;
+        }
+
+        .card {
+            min-width: 340px;
+            border-radius: 10px;
+            box-shadow: 0 0 20px rgba(101, 100, 100, 0.5);
+        }
+
+        #logo {
+            width: 100px;
+            height: 100px;
+            position: absolute;
+            top: -40px;
+            border-radius: 50%;
+            box-shadow: 0 0 20px rgba(101, 100, 100, 0.5);
+        }
+    </style>
+</head>
+<body class="d-flex align-items-center justify-content-center vh-100 w-100">
+<form method="post">
+    <div class="card d-flex flex-column align-items-center justify-content-center p-2">
+        <img id="logo" th:src="@{images/logo.png}" alt="logo">
+        <div class="card-body d-flex flex-column justify-content-center w-100">
+            <h4 class="text-center mt-5" th:text="${header}"></h4>
+            <p class="text-center mt-4 mb-4" th:utext="${message}"></p>
+            <a class="btn" style="background-color:#212529; color: #ffffff" href="/login">Back to Sing in</a>
+        </div>
+    </div>
+</form>
+</body>
+</html>

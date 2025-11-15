@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{common/layout}">
+
+<head>
+    <title>Role Permission</title>
+</head>
+
+<body>
+<h4 layout:fragment="title">Assign Permission to Role</h4>
+
+<th:block layout:fragment="content">
+    <form th:action="${entryUrl}" method="post">
+        <table class="table table-bordered">
+            <thead>
+            <tr>
+                <th>SL</th>
+                <th>Role</th>
+                <th th:each="type : ${types}" th:text="${type.title}"></th>
+            </tr>
+            </thead>
+
+            <tbody>
+            <tr th:each="role, rowStat : ${roles}">
+                <td th:text="${rowStat.index + 1}"></td>
+                <td th:text="${role.roleName}"></td>
+
+                <td th:each="type : ${types}">
+                    <div th:each="module : ${modules}">
+                        <input type="checkbox" name="permissions"
+                               th:value="${module.name() + '_' + type.name()}"
+                               th:checked="${matrix[role.id][module.name()][type.name()]}">
+                    </div>
+                </td>
+            </tr>
+            </tbody>
+        </table>
+
+
+        <button class="btn btn-primary mt-2">Save</button>
+    </form>
+
+
+</th:block>
+
+</body>
+</html>

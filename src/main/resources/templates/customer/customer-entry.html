@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{common/layout}">
+<head>
+  <meta charset="UTF-8">
+  <title>Book Store</title>
+</head>
+<body>
+<h4 layout:fragment="title" th:text="${customer.id == null ? 'Create Customer' : 'Update Customer'}"></h4>
+<th:block layout:fragment="content">
+  <form th:action="${entryUrl}" th:object="${customer}" method="post">
+    <input type="hidden" th:field="*{id}">
+    <div class="card">
+      <h5 class="card-header text-primary">Customer Information</h5>
+      <div class="card-body">
+
+        <div class="row">
+          <div class="col-6">
+            <label class="form-label" for="name">Name<span class="text-danger">*</span></label>
+            <input type="text" class="form-control" id="name" placeholder="Name" th:field="*{name}">
+          </div>
+          <div class="col-6">
+            <label class="form-label" for="phone">Phone<span class="text-danger">*</span></label>
+            <input type="text" class="form-control" id="phone" placeholder="0123xxxx789" th:field="*{phone}">
+          </div>
+        </div>
+
+        <div class="row mt-3">
+          <div class="col-6">
+            <label class="form-label" for="email">E-mail<span class="text-danger">*</span></label>
+            <input type="text" class="form-control" id="email" placeholder="xxxxxx@gmail.com" th:field="*{email}">
+          </div>
+          <div class="col-6">
+            <label class="form-label" for="address">Address<span class="text-danger">*</span></label>
+            <input type="text" class="form-control" id="address" placeholder="Address" th:field="*{address}">
+          </div>
+        </div>
+
+      </div>
+    </div>
+    <button class="btn btn-primary mt-2" type="submit" th:if="${loggedUser.isAdmin}" th:text="${customer.id == null ? 'Save' : 'Update'}"></button>
+  </form>
+    <th:block th:replace="~{common/toast.html :: toast}"></th:block>
+</th:block>
+</body>
+</html>

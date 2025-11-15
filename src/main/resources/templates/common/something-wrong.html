@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Something went wrong</title>
+    <link rel="icon" th:href="@{images/icon.png}">
+    <link rel="stylesheet" th:href="@{/css/bootstrap.min.css}">
+    <style>
+        @font-face {
+            font-family: 'Roboto';
+            src: url('/fonts/roboto-regular.woff') format('woff');
+            font-weight: 400;
+            font-style: normal;
+        }
+
+        body {
+            font-family: 'Roboto', sans-serif;
+        }
+    </style>
+</head>
+<body class="d-flex flex-column align-items-center justify-content-center vh-100 w-100">
+<img style="height: 60%; width: auto" th:src="@{images/error.png}" alt="error">
+<h2>Oops! Something Went Wrong.</h2>
+<p class="text-center fs-5">The page you are looking for does not exist<br>or you do not have permission to access.</p>
+<a class="btn" style="background-color:#212529; color: #ffffff" href="/">Back to Dashboard</a>
+</body>
+</html>

@@ -31,8 +31,8 @@
         isActivesupplier=${uri.startsWith(supplierEntry) || uri.startsWith(supplierList)},
         isActiveCustomer=${uri.startsWith(customerEntry) || uri.startsWith(customerList)},
         isActiveUser=${uri.startsWith(userEntry) || uri.startsWith(userList)},
-        isActiveRole=${(uri.startsWith(roleEntry) || uri.startsWith(roleList)) && !uri.startsWith(rolePermissionEntry) && !uri.startsWith(rolePermissionList)},
-        isActiveRolePermission=${uri.startsWith(rolePermissionEntry) || uri.startsWith(rolePermissionList)},
+        isActiveRole=${(uri.startsWith(roleEntry) || uri.startsWith(roleList)) && !uri.startsWith(rolePermissionEntry)},
+        isActiveRolePermission=${uri.startsWith(rolePermissionEntry)},
         isActiveReport=${uri.startsWith(report)}">
     <ul class="list-unstyled lh-lg">
         <li><a class="nav-link" th:classappend="${isActiveDashboard ? 'active-menu' : ''}" th:href="@{${dashboard}}"><i class="bi bi-grid-1x2-fill me-3"></i>Dashboard</a></li>
@@ -44,7 +44,7 @@
         <li><a class="nav-link" th:classappend="${isActiveCustomer ? 'active-menu' : ''}" th:href="@{${customerList}}"><i class="bi bi-people-fill me-3"></i>Customer</a></li>
         <li><a class="nav-link" th:classappend="${isActiveUser ? 'active-menu' : ''}" th:if="${loggedUser.isAdmin}" th:href="@{${userList}}"><i class="bi bi-person-circle me-3"></i>User</a></li>
         <li><a class="nav-link" th:classappend="${isActiveRole ? 'active-menu' : ''}" th:if="${loggedUser.isAdmin}" th:href="@{${roleList}}"><i class="bi bi-person-fill-gear me-3"></i>Role</a></li>
-        <li><a class="nav-link" th:classappend="${isActiveRolePermission ? 'active-menu' : ''}" th:if="${loggedUser.isAdmin}" th:href="@{${rolePermissionList}}"><i class="bi bi-clipboard-check me-3"></i>Role Permission</a></li>
+        <li><a class="nav-link" th:classappend="${isActiveRolePermission ? 'active-menu' : ''}" th:if="${loggedUser.isAdmin}" th:href="@{${rolePermissionEntry}}"><i class="bi bi-clipboard-check me-3"></i>Role Permission</a></li>
         <li><a class="nav-link" th:classappend="${isActiveReport ? 'active-menu' : ''}" th:href="@{${report}}"><i class="bi bi-file-earmark-bar-graph-fill me-3"></i>Report</a></li>
     </ul>
 </div>

@@ -37,11 +37,15 @@ public class RolePermissionService {
         return repo.findAll();
     }
 
-    public void save(RolePermission rolePermission) {
-        repo.save(rolePermission);
+    public RolePermission save(RolePermission rolePermission) {
+        return repo.save(rolePermission);
     }
 
     public RolePermission findById(Long id) {
         return repo.findById(id).orElse(null);
+    }
+
+    public List<RolePermission> findAllByRoleId(Long roleId) {
+        return repo.findAllByRole_Id(roleId);
     }
 }

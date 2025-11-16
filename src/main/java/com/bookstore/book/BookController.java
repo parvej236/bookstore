@@ -22,7 +22,7 @@ public class BookController {
     private final BookService service;
     private final SupplierService supplierService;
 
-    @PreAuthorize("@permissionEvaluator.hasPermission(authentication, 'BOOK_VIEW')")
+//    @PreAuthorize("@permissionEvaluator.hasPermission(authentication, 'BOOK_VIEW')")
     @GetMapping(Routes.BOOK_ENTRY)
     public String bookEntry(@RequestParam(name = "id", required = false) Long id, @RequestParam(name = "msg", required = false) String msg, Model model) {
         Book book = new Book();
